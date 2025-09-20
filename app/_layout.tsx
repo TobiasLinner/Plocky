@@ -1,24 +1,64 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
+import { Drawer } from "expo-router/drawer";
+import { StatusBar } from "expo-status-bar";
+import "react-native-reanimated";
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useColorScheme } from "@/hooks/use-color-scheme";
+import { Ionicons } from "@expo/vector-icons";
 
 export const unstable_settings = {
-  anchor: '(tabs)',
+  anchor: "(tabs)",
 };
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <Drawer
+          screenOptions={{
+            drawerActiveTintColor: "#e91e63",
+            drawerHideStatusBarOnOpen: true,
+          }}
+        >
+          <Drawer.Screen
+            name="index"
+            options={{
+              drawerLabel: "Home",
+              title: "Plock",
+              drawerIcon: ({ color, size }) => (
+                <Ionicons name="home" color={color} size={size} />
+              ),
+            }}
+          />
+          <Drawer.Screen
+            name="localshops"
+            options={{
+              drawerLabel: "Hitta lokala butiker",
+              title: "Lokala butiker",
+              drawerIcon: ({ color, size }) => (
+                <Ionicons name="storefront" color={color} size={size} />
+              ),
+            }}
+          />
+          <Drawer.Screen
+            name="map"
+            options={{
+              drawerLabel: "Karta",
+              title: "Karta",
+              drawerIcon: ({ color, size }) => (
+                <Ionicons name="map" color={color} size={size} />
+              ),
+            }}
+          />
+        </Drawer>
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </>
   );
 }
