@@ -14,8 +14,8 @@ export default function LocalShopsMap({
 
   const camera = {
     coordinates: {
-      latitude: localshops[0].lat ?? 57.49639217523064,
-      longitude: localshops[0].lng ?? 13.066515081818025,
+      latitude: 57.49639217523064,
+      longitude: 13.066515081818025,
     },
     zoom: 11,
   };

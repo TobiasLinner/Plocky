@@ -22,10 +22,9 @@ export default function LocalShopCard({ shop, onPress }: Props) {
         <Text style={styles.title}>{shop.name}</Text>
         <Text style={styles.category}>{shop.category}</Text>
         <Text style={styles.address}>
-          {shop.address}
-          {shop.city ? `, ${shop.city}` : ""}
+          {shop.address}, {shop.city}
         </Text>
-        {shop.phone ? <Text style={styles.phone}>{shop.phone}</Text> : null}
+        {<Text style={styles.phone}>{shop.phone}</Text>}
       </View>
     </TouchableOpacity>
   );
