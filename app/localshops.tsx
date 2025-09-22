@@ -29,7 +29,7 @@ export default function LocalShopsScreen() {
         onClose={() => setSelectedShopId(null)}
         onShowOnMap={(id) => {
           setSelectedShopId(null);
-          router.push(`/map?shop=${encodeURIComponent(id)}`);
+          router.push(`/mymap?shop=${encodeURIComponent(id)}`);
         }}
       />
     </>

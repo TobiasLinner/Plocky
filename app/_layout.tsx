@@ -47,7 +47,7 @@ export default function RootLayout() {
             }}
           />
           <Drawer.Screen
-            name="map"
+            name="mymap"
             options={{
               drawerLabel: "Karta",
               title: "Karta",
