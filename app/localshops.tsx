@@ -11,9 +11,23 @@ export default function LocalShopsScreen() {
 
   const shop = localShops.find((s) => s.id === selectedShopId) ?? null;
 
+  const handleShowOnMap = () => {
+    if (!shop) return;
+
+    // Close the modal before navigating
+    setSelectedShopId(null);
+
+    // Navigate to the map screen with latitude and longitude as parameters
+    // Cast to `any` to satisfy the generated route union types from expo-router.
+    router.push({
+      pathname: "/mymap",
+      params: { lat: String(shop.lat), lng: String(shop.lng) },
+    } as any);
+  };
+
   return (
     <>
-      <ScrollView contentContainerStyle={styles.root}>
+      <ScrollView>
         {localShops.map((s) => (
           <LocalShopCard
             key={s.id}
@@ -27,10 +41,7 @@ export default function LocalShopsScreen() {
         shop={shop}
         visible={!!shop}
         onClose={() => setSelectedShopId(null)}
-        onShowOnMap={(id) => {
-          setSelectedShopId(null);
-          router.push(`/mymap?shop=${encodeURIComponent(id)}`);
-        }}
+        onShowOnMap={handleShowOnMap}
       />
     </>
   );
