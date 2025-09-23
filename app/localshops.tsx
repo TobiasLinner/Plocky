@@ -14,15 +14,12 @@ export default function LocalShopsScreen() {
   const handleShowOnMap = () => {
     if (!shop) return;
 
-    // Close the modal before navigating
     setSelectedShopId(null);
 
-    // Navigate to the map screen with latitude and longitude as parameters
-    // Cast to `any` to satisfy the generated route union types from expo-router.
     router.push({
       pathname: "/mymap",
-      params: { lat: String(shop.lat), lng: String(shop.lng) },
-    } as any);
+      params: { lat: shop.lat, lng: shop.lng },
+    });
   };
 
   return (

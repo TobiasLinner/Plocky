@@ -6,7 +6,7 @@ type Props = {
   shop?: LocalShop | null;
   visible: boolean;
   onClose: () => void;
-  onShowOnMap?: () => void; // No longer takes an ID
+  onShowOnMap?: () => void;
 };
 
 export default function ShopModal({
@@ -16,22 +16,25 @@ export default function ShopModal({
   onShowOnMap,
 }: Props) {
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      transparent
-      onRequestClose={onClose}
-    >
+    <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
           {shop ? (
             <View>
-              {/* ... other Text components ... */}
+              <Text style={styles.modalTitle}>{shop.name}</Text>
+              <Text style={styles.modalCategory}>{shop.category}</Text>
+              <Text style={styles.modalText}>
+                {shop.address}
+                {shop.city ? `, ${shop.city}` : ""}
+              </Text>
+              {shop.phone ? (
+                <Text style={styles.modalText}>{shop.phone}</Text>
+              ) : null}
+              {shop.description ? (
+                <Text style={styles.modalDescription}>{shop.description}</Text>
+              ) : null}
               <View style={styles.buttons}>
-                <Button
-                  title="Visa på karta"
-                  onPress={onShowOnMap} // Directly call the passed function
-                />
+                <Button title="Visa på karta" onPress={onShowOnMap} />
                 <View style={{ width: 12 }} />
                 <Button title="Stäng" onPress={onClose} />
               </View>
@@ -44,8 +47,6 @@ export default function ShopModal({
     </Modal>
   );
 }
-
-// ... styles remain the same
 
 const styles = StyleSheet.create({
   modalOverlay: {
