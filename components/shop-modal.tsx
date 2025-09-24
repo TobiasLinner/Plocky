@@ -1,9 +1,9 @@
 import type { LocalShop } from "@/data/localshops";
 import React from "react";
-import { Button, Modal, StyleSheet, Text, View } from "react-native";
+import { Button, Linking, Modal, StyleSheet, Text, View } from "react-native";
 
 type Props = {
-  shop?: LocalShop | null;
+  shop: LocalShop;
   visible: boolean;
   onClose: () => void;
   onShowOnMap?: () => void;
@@ -19,29 +19,35 @@ export default function ShopModal({
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
-          {shop ? (
-            <View>
-              <Text style={styles.modalTitle}>{shop.name}</Text>
-              <Text style={styles.modalCategory}>{shop.category}</Text>
-              <Text style={styles.modalText}>
-                {shop.address}
-                {shop.city ? `, ${shop.city}` : ""}
-              </Text>
-              {shop.phone ? (
-                <Text style={styles.modalText}>{shop.phone}</Text>
-              ) : null}
-              {shop.description ? (
-                <Text style={styles.modalDescription}>{shop.description}</Text>
-              ) : null}
-              <View style={styles.buttons}>
-                <Button title="Visa på karta" onPress={onShowOnMap} />
-                <View style={{ width: 12 }} />
-                <Button title="Stäng" onPress={onClose} />
-              </View>
+          <View>
+            <Text style={styles.modalTitle}>{shop.name}</Text>
+            <Text style={styles.modalCategory}>{shop.category}</Text>
+            <Text style={styles.modalText}>
+              {shop.address}
+              {shop.city}
+            </Text>
+            <Text style={styles.modalText}>{shop.phone}</Text>
+            <Text style={styles.modalDescription}>{shop.description}</Text>
+            <View style={styles.buttons}>
+              <Button title="Visa på karta" onPress={onShowOnMap} />
+              <View style={{ width: 12 }} />
+              <Button
+                title="Öppna i kartor"
+                onPress={() => {
+                  const lat = shop.lat;
+                  const lng = shop.lng;
+                  let url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+                  Linking.canOpenURL(url).then((supported) => {
+                    if (supported) {
+                      Linking.openURL(url);
+                    }
+                  });
+                }}
+              />
+              <View style={{ width: 12 }} />
+              <Button title="Stäng" onPress={onClose} />
             </View>
-          ) : (
-            <Text>Butiken hittades inte.</Text>
-          )}
+          </View>
         </View>
       </View>
     </Modal>

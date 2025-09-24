@@ -7,6 +7,7 @@ import { Drawer } from "expo-router/drawer";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
+import { MapProvider } from "@/context/map-context";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -20,43 +21,45 @@ export default function RootLayout() {
   return (
     <>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Drawer
-          screenOptions={{
-            drawerActiveTintColor: "#e91e63",
-            drawerHideStatusBarOnOpen: true,
-          }}
-        >
-          <Drawer.Screen
-            name="index"
-            options={{
-              drawerLabel: "Home",
-              title: "Plock",
-              drawerIcon: ({ color, size }) => (
-                <Ionicons name="home" color={color} size={size} />
-              ),
+        <MapProvider>
+          <Drawer
+            screenOptions={{
+              drawerActiveTintColor: "#e91e63",
+              drawerHideStatusBarOnOpen: true,
             }}
-          />
-          <Drawer.Screen
-            name="localshops"
-            options={{
-              drawerLabel: "Hitta lokala butiker",
-              title: "Lokala butiker",
-              drawerIcon: ({ color, size }) => (
-                <Ionicons name="storefront" color={color} size={size} />
-              ),
-            }}
-          />
-          <Drawer.Screen
-            name="mymap"
-            options={{
-              drawerLabel: "Karta",
-              title: "Karta",
-              drawerIcon: ({ color, size }) => (
-                <Ionicons name="map" color={color} size={size} />
-              ),
-            }}
-          />
-        </Drawer>
+          >
+            <Drawer.Screen
+              name="index"
+              options={{
+                drawerLabel: "Home",
+                title: "Plock",
+                drawerIcon: ({ color, size }) => (
+                  <Ionicons name="home" color={color} size={size} />
+                ),
+              }}
+            />
+            <Drawer.Screen
+              name="localshops"
+              options={{
+                drawerLabel: "Hitta lokala butiker",
+                title: "Lokala butiker",
+                drawerIcon: ({ color, size }) => (
+                  <Ionicons name="storefront" color={color} size={size} />
+                ),
+              }}
+            />
+            <Drawer.Screen
+              name="mymap"
+              options={{
+                drawerLabel: "Karta",
+                title: "Karta",
+                drawerIcon: ({ color, size }) => (
+                  <Ionicons name="map" color={color} size={size} />
+                ),
+              }}
+            />
+          </Drawer>
+        </MapProvider>
         <StatusBar style="auto" />
       </ThemeProvider>
     </>

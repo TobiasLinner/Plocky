@@ -1,14 +1,8 @@
 import LocalShopsMap from "@/components/local-shops-map";
-import { useLocalSearchParams } from "expo-router";
+import { useMap } from "@/context/map-context";
 import React from "react";
 
 export default function MyMap() {
-  const params = useLocalSearchParams();
-
-  const focusedLocation = {
-    latitude: Number(params.lat),
-    longitude: Number(params.lng),
-  };
-
+  const { focusedLocation } = useMap();
   return <LocalShopsMap focusedLocation={focusedLocation} />;
 }

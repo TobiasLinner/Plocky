@@ -1,13 +1,15 @@
 import LocalShopCard from "@/components/local-shop-card";
 import ShopModal from "@/components/shop-modal";
+import { useMap } from "@/context/map-context";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import localShops from "../data/localshops";
 
 export default function LocalShopsScreen() {
   const [selectedShopId, setSelectedShopId] = useState<string | null>(null);
   const router = useRouter();
+  const { setFocusedLocation } = useMap();
 
   const shop = localShops.find((s) => s.id === selectedShopId) ?? null;
 
@@ -15,15 +17,12 @@ export default function LocalShopsScreen() {
     if (!shop) return;
 
     setSelectedShopId(null);
-
-    router.push({
-      pathname: "/mymap",
-      params: { lat: shop.lat, lng: shop.lng },
-    });
+    setFocusedLocation({ latitude: shop.lat, longitude: shop.lng });
+    router.push("/mymap");
   };
 
   return (
-    <>
+    <View>
       <ScrollView>
         {localShops.map((s) => (
           <LocalShopCard
@@ -34,13 +33,15 @@ export default function LocalShopsScreen() {
         ))}
       </ScrollView>
 
-      <ShopModal
-        shop={shop}
-        visible={!!shop}
-        onClose={() => setSelectedShopId(null)}
-        onShowOnMap={handleShowOnMap}
-      />
-    </>
+      {shop && (
+        <ShopModal
+          shop={shop}
+          visible={true}
+          onClose={() => setSelectedShopId(null)}
+          onShowOnMap={handleShowOnMap}
+        />
+      )}
+    </View>
   );
 }
 
