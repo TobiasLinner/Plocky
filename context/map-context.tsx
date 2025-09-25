@@ -14,7 +14,7 @@ type MapContextType = {
 
 const MapContext = createContext({} as MapContextType);
 
-export function MapProvider({ props }: { props: PropsWithChildren }) {
+export function MapProvider(props: PropsWithChildren) {
   const [focusedLocation, setFocusedLocation] = useState<Coord | null>(null);
   return (
     <MapContext.Provider value={{ focusedLocation, setFocusedLocation }}>
