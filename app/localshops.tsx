@@ -1,17 +1,19 @@
 import LocalShopCard from "@/components/local-shop-card";
 import ShopModal from "@/components/shop-modal";
 import { useMap } from "@/context/map-context";
+import { useShopsStore } from "@/stores/shops-store";
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import localShops from "../data/localshops";
 
 export default function LocalShopsScreen() {
+  const shops = useShopsStore((s) => s.shops);
   const [selectedShopId, setSelectedShopId] = useState<string | null>(null);
   const router = useRouter();
   const { setFocusedLocation } = useMap();
 
-  const shop = localShops.find((s) => s.id === selectedShopId) ?? null;
+  const shop = shops.find((s) => s.id === selectedShopId) ?? null;
 
   const handleShowOnMap = () => {
     if (!shop) return;
@@ -24,7 +26,7 @@ export default function LocalShopsScreen() {
   return (
     <View>
       <ScrollView>
-        {localShops.map((s) => (
+        {shops.map((s) => (
           <LocalShopCard
             key={s.id}
             shop={s}
@@ -32,6 +34,25 @@ export default function LocalShopsScreen() {
           />
         ))}
       </ScrollView>
+
+      <View style={{ position: "absolute", right: 16, bottom: 16 }}>
+        <View
+          style={{
+            backgroundColor: "#e91e63",
+            borderRadius: 24,
+            paddingHorizontal: 16,
+            paddingVertical: 12,
+            elevation: 3,
+          }}
+        >
+          <Ionicons
+            name="add"
+            color="#fff"
+            size={20}
+            onPress={() => router.push({ pathname: "/add-shop" } as any)}
+          />
+        </View>
+      </View>
 
       {shop && (
         <ShopModal
