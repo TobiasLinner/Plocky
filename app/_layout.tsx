@@ -58,6 +58,16 @@ export default function RootLayout() {
                 ),
               }}
             />
+            <Drawer.Screen
+              name="add-shop"
+              options={{
+                drawerLabel: "Lägg till butik",
+                title: "Lägg till butik",
+                drawerIcon: ({ color, size }) => (
+                  <Ionicons name="add-circle" color={color} size={size} />
+                ),
+              }}
+            />
           </Drawer>
         </MapProvider>
         <StatusBar style="auto" />
