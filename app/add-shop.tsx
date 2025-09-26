@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Button,
+  Image,
   Modal,
   Pressable,
   ScrollView,
@@ -40,6 +41,7 @@ export default function AddShopScreen() {
     phone: string;
     hours: string;
     description: string;
+    imageUri?: string;
   };
 
   const {
@@ -61,11 +63,111 @@ export default function AddShopScreen() {
       phone: "",
       hours: "",
       description: "",
+      imageUri: "",
     },
   });
 
   const watchedLat = watch("lat");
   const watchedLng = watch("lng");
+  const watchedImage = watch("imageUri");
+
+  const pickImage = async () => {
+    let ImagePicker: any;
+    try {
+      ImagePicker = require("expo-image-picker");
+    } catch (err) {
+      console.warn("expo-image-picker native module not available", err);
+      alert(
+        "Image picker finns inte i den här klienten. Bygg en dev-client eller kör på en enhet där native-modulen är tillgänglig."
+      );
+      return;
+    }
+
+    if (
+      !ImagePicker ||
+      typeof ImagePicker.requestMediaLibraryPermissionsAsync !== "function" ||
+      typeof ImagePicker.launchImageLibraryAsync !== "function"
+    ) {
+      console.warn(
+        "expo-image-picker methods not available, native module missing",
+        ImagePicker
+      );
+      alert(
+        "Image picker-native-modulen är inte tillgänglig i den här klienten. Bygg en dev-client eller kör på en enhet där native-modulen är länkad."
+      );
+      return;
+    }
+
+    try {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted" && status !== "limited") {
+        alert("Behöver åtkomst till bilder för att välja bild.");
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 0.7,
+      });
+
+      if (!result.canceled && (result.assets?.length ?? 0) > 0) {
+        const uri = result.assets[0].uri;
+        setValue("imageUri", uri);
+      }
+    } catch (e) {
+      console.warn("Image picker error", e);
+    }
+  };
+
+  const takePhoto = async () => {
+    let ImagePicker: any;
+    try {
+      ImagePicker = require("expo-image-picker");
+    } catch (err) {
+      console.warn("expo-image-picker native module not available", err);
+      alert(
+        "Kamera finns inte i den här klienten. Bygg en dev-client eller kör på en enhet där native-modulen är tillgänglig."
+      );
+      return;
+    }
+
+    if (
+      !ImagePicker ||
+      typeof ImagePicker.requestCameraPermissionsAsync !== "function" ||
+      typeof ImagePicker.launchCameraAsync !== "function"
+    ) {
+      console.warn(
+        "expo-image-picker camera methods not available, native module missing",
+        ImagePicker
+      );
+      alert(
+        "Kamera-native-modulen är inte tillgänglig i den här klienten. Bygg en dev-client eller kör på en enhet där native-modulen är länkad."
+      );
+      return;
+    }
+
+    try {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== "granted" && status !== "limited") {
+        alert("Behöver åtkomst till kameran för att ta ett foto.");
+        return;
+      }
+
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        quality: 0.7,
+      });
+
+      if (!result.canceled && (result.assets?.length ?? 0) > 0) {
+        const uri = result.assets[0].uri;
+        setValue("imageUri", uri);
+      }
+    } catch (e) {
+      console.warn("Camera error", e);
+    }
+  };
 
   const canSave =
     !!watch("name") &&
@@ -170,6 +272,54 @@ export default function AddShopScreen() {
           />
         )}
       />
+
+      {/* Image URL (optional) + preview */}
+      <Controller
+        control={control}
+        name="imageUri"
+        render={({ field }: any) => (
+          <>
+            <TextInput
+              placeholder="Bild-URL (valfritt)"
+              value={field.value}
+              onChangeText={field.onChange as any}
+              style={styles.input}
+            />
+            <View style={{ flexDirection: "row", gap: 12, marginTop: 8 }}>
+              <Pressable
+                onPress={async () => {
+                  await pickImage();
+                }}
+                style={({ pressed }) => ({
+                  backgroundColor: "#eee",
+                  padding: 8,
+                  borderRadius: 8,
+                })}
+              >
+                <Text>Välj bild</Text>
+              </Pressable>
+              <Pressable
+                onPress={async () => {
+                  await takePhoto();
+                }}
+                style={({ pressed }) => ({
+                  backgroundColor: "#eee",
+                  padding: 8,
+                  borderRadius: 8,
+                })}
+              >
+                <Text>Ta bild</Text>
+              </Pressable>
+            </View>
+          </>
+        )}
+      />
+      {watchedImage ? (
+        <Image
+          source={{ uri: watchedImage }}
+          style={{ width: 120, height: 80, borderRadius: 6, marginTop: 8 }}
+        />
+      ) : null}
       <Text style={{ fontSize: 16, fontWeight: "600" }}>
         Välj plats på karta
       </Text>
