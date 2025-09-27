@@ -20,6 +20,9 @@ export default function AddShopScreen() {
   const router = useRouter();
   const addShop = useShopsStore((s) => s.addShop);
 
+  const placeholderColor = "#888888";
+  const inputTextColor = "#111111";
+
   const [selected, setSelected] = useState<{
     latitude: number;
     longitude: number;
@@ -76,7 +79,6 @@ export default function AddShopScreen() {
     try {
       ImagePicker = require("expo-image-picker");
     } catch (err) {
-      console.warn("expo-image-picker native module not available", err);
       alert(
         "Image picker finns inte i den här klienten. Bygg en dev-client eller kör på en enhet där native-modulen är tillgänglig."
       );
@@ -88,10 +90,6 @@ export default function AddShopScreen() {
       typeof ImagePicker.requestMediaLibraryPermissionsAsync !== "function" ||
       typeof ImagePicker.launchImageLibraryAsync !== "function"
     ) {
-      console.warn(
-        "expo-image-picker methods not available, native module missing",
-        ImagePicker
-      );
       alert(
         "Image picker-native-modulen är inte tillgänglig i den här klienten. Bygg en dev-client eller kör på en enhet där native-modulen är länkad."
       );
@@ -116,9 +114,7 @@ export default function AddShopScreen() {
         const uri = result.assets[0].uri;
         setValue("imageUri", uri);
       }
-    } catch (e) {
-      console.warn("Image picker error", e);
-    }
+    } catch (e) {}
   };
 
   const takePhoto = async () => {
@@ -126,7 +122,6 @@ export default function AddShopScreen() {
     try {
       ImagePicker = require("expo-image-picker");
     } catch (err) {
-      console.warn("expo-image-picker native module not available", err);
       alert(
         "Kamera finns inte i den här klienten. Bygg en dev-client eller kör på en enhet där native-modulen är tillgänglig."
       );
@@ -138,10 +133,6 @@ export default function AddShopScreen() {
       typeof ImagePicker.requestCameraPermissionsAsync !== "function" ||
       typeof ImagePicker.launchCameraAsync !== "function"
     ) {
-      console.warn(
-        "expo-image-picker camera methods not available, native module missing",
-        ImagePicker
-      );
       alert(
         "Kamera-native-modulen är inte tillgänglig i den här klienten. Bygg en dev-client eller kör på en enhet där native-modulen är länkad."
       );
@@ -164,9 +155,7 @@ export default function AddShopScreen() {
         const uri = result.assets[0].uri;
         setValue("imageUri", uri);
       }
-    } catch (e) {
-      console.warn("Camera error", e);
-    }
+    } catch (e) {}
   };
 
   const canSave =
@@ -212,7 +201,8 @@ export default function AddShopScreen() {
             placeholder="Namn"
             value={field.value}
             onChangeText={field.onChange as any}
-            style={styles.input}
+            placeholderTextColor={placeholderColor}
+            style={[styles.input, { color: inputTextColor }]}
           />
         )}
       />
@@ -227,7 +217,8 @@ export default function AddShopScreen() {
             placeholder="Kategori"
             value={field.value}
             onChangeText={field.onChange as any}
-            style={styles.input}
+            placeholderTextColor={placeholderColor}
+            style={[styles.input, { color: inputTextColor }]}
           />
         )}
       />
@@ -242,7 +233,8 @@ export default function AddShopScreen() {
             placeholder="Adress"
             value={field.value}
             onChangeText={field.onChange as any}
-            style={styles.input}
+            placeholderTextColor={placeholderColor}
+            style={[styles.input, { color: inputTextColor }]}
           />
         )}
       />
@@ -255,7 +247,8 @@ export default function AddShopScreen() {
             placeholder="Stad"
             value={field.value}
             onChangeText={field.onChange as any}
-            style={styles.input}
+            placeholderTextColor={placeholderColor}
+            style={[styles.input, { color: inputTextColor }]}
           />
         )}
       />
@@ -268,12 +261,12 @@ export default function AddShopScreen() {
             placeholder="Postnummer"
             value={field.value}
             onChangeText={field.onChange as any}
-            style={styles.input}
+            placeholderTextColor={placeholderColor}
+            style={[styles.input, { color: inputTextColor }]}
           />
         )}
       />
 
-      {/* Image URL (optional) + preview */}
       <Controller
         control={control}
         name="imageUri"
@@ -283,7 +276,8 @@ export default function AddShopScreen() {
               placeholder="Bild-URL (valfritt)"
               value={field.value}
               onChangeText={field.onChange as any}
-              style={styles.input}
+              placeholderTextColor={placeholderColor}
+              style={[styles.input, { color: inputTextColor }]}
             />
             <View style={{ flexDirection: "row", gap: 12, marginTop: 8 }}>
               <Pressable
@@ -393,7 +387,8 @@ export default function AddShopScreen() {
             placeholder="Telefon"
             value={field.value}
             onChangeText={field.onChange as any}
-            style={styles.input}
+            placeholderTextColor={placeholderColor}
+            style={[styles.input, { color: inputTextColor }]}
           />
         )}
       />
@@ -406,7 +401,8 @@ export default function AddShopScreen() {
             placeholder="Öppettider"
             value={field.value}
             onChangeText={field.onChange as any}
-            style={styles.input}
+            placeholderTextColor={placeholderColor}
+            style={[styles.input, { color: inputTextColor }]}
           />
         )}
       />
@@ -419,7 +415,8 @@ export default function AddShopScreen() {
             placeholder="Beskrivning"
             value={field.value}
             onChangeText={field.onChange as any}
-            style={[styles.input, styles.multiline]}
+            placeholderTextColor={placeholderColor}
+            style={[styles.input, styles.multiline, { color: inputTextColor }]}
             multiline
           />
         )}
