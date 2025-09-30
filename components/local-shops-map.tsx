@@ -3,6 +3,7 @@ import { useShopsStore } from "@/stores/shops-store";
 import { GoogleMaps } from "expo-maps";
 import React, { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type Props = {
   focusedLocation?: {
@@ -30,7 +31,7 @@ export default function LocalShopsMap({ focusedLocation }: Props) {
 
   const initialCamera = {
     coordinates: { latitude: 57.49639217523064, longitude: 13.066515081818025 },
-    zoom: 15,
+    zoom: 6,
   };
 
   const markers = shopsToDisplay.map((shop) => ({
@@ -51,7 +52,7 @@ export default function LocalShopsMap({ focusedLocation }: Props) {
       };
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
       <View style={styles.filterBar}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <Pressable
@@ -122,21 +123,15 @@ export default function LocalShopsMap({ focusedLocation }: Props) {
         style={{ flex: 1 }}
         cameraPosition={{
           coordinates: cameraCoordinates,
-          zoom: initialCamera.zoom,
+          zoom: focusedLocation ? 8 : initialCamera.zoom,
         }}
         markers={markers}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  fallback: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 12,
-  },
   filterBar: {
     paddingVertical: 8,
     paddingHorizontal: 12,

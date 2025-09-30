@@ -31,8 +31,9 @@ export default function RootLayout() {
             <Drawer.Screen
               name="index"
               options={{
-                drawerLabel: "Home",
+                drawerLabel: "Startsida",
                 title: "Plock",
+                headerShown: false,
                 drawerIcon: ({ color, size }) => (
                   <Ionicons name="home" color={color} size={size} />
                 ),

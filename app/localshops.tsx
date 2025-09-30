@@ -1,11 +1,11 @@
 import LocalShopCard from "@/components/local-shop-card";
-import ShopModal from "@/components/shop-modal";
 import { useMap } from "@/context/map-context";
 import { useShopsStore } from "@/stores/shops-store";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LocalShopsScreen() {
   const shops = useShopsStore((s) => s.shops);
@@ -24,45 +24,44 @@ export default function LocalShopsScreen() {
   };
 
   return (
-    <View>
-      <ScrollView>
-        {shops.map((s) => (
-          <LocalShopCard
-            key={s.id}
-            shop={s}
-            onPress={() => setSelectedShopId(s.id)}
-          />
-        ))}
-      </ScrollView>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View>
+        <ScrollView>
+          {shops.map((s) => (
+            <LocalShopCard
+              key={s.id}
+              shop={s}
+              onPress={() => setSelectedShopId(s.id)}
+              isExpanded={selectedShopId === s.id}
+              onShowOnMap={() => {
+                setSelectedShopId(null);
+                setFocusedLocation({ latitude: s.lat, longitude: s.lng });
+                router.push("/mymap");
+              }}
+            />
+          ))}
+        </ScrollView>
 
-      <View style={{ position: "absolute", right: 16, bottom: 16 }}>
-        <View
-          style={{
-            backgroundColor: "#e91e63",
-            borderRadius: 24,
-            paddingHorizontal: 16,
-            paddingVertical: 12,
-            elevation: 3,
-          }}
-        >
-          <Ionicons
-            name="add"
-            color="#fff"
-            size={20}
-            onPress={() => router.push({ pathname: "/add-shop" } as any)}
-          />
+        <View style={{ position: "absolute", right: 16, bottom: 16 }}>
+          <View
+            style={{
+              backgroundColor: "#e91e63",
+              borderRadius: 24,
+              paddingHorizontal: 16,
+              paddingVertical: 12,
+              elevation: 3,
+            }}
+          >
+            <Ionicons
+              name="add"
+              color="#fff"
+              size={20}
+              onPress={() => router.push({ pathname: "/add-shop" } as any)}
+            />
+          </View>
         </View>
       </View>
-
-      {shop && (
-        <ShopModal
-          shop={shop}
-          visible={true}
-          onClose={() => setSelectedShopId(null)}
-          onShowOnMap={handleShowOnMap}
-        />
-      )}
-    </View>
+    </SafeAreaView>
   );
 }
 

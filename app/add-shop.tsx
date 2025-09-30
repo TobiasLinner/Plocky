@@ -191,252 +191,260 @@ export default function AddShopScreen() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Controller
-        control={control}
-        name="name"
-        rules={{ required: true }}
-        render={({ field }) => (
-          <TextInput
-            placeholder="Namn"
-            value={field.value}
-            onChangeText={field.onChange as any}
-            placeholderTextColor={placeholderColor}
-            style={[styles.input, { color: inputTextColor }]}
-          />
-        )}
-      />
-      {errors.name && <Text style={{ color: "red" }}>Namn krävs</Text>}
-
-      <Controller
-        control={control}
-        name="category"
-        rules={{ required: true }}
-        render={({ field }) => (
-          <TextInput
-            placeholder="Kategori"
-            value={field.value}
-            onChangeText={field.onChange as any}
-            placeholderTextColor={placeholderColor}
-            style={[styles.input, { color: inputTextColor }]}
-          />
-        )}
-      />
-      {errors.category && <Text style={{ color: "red" }}>Kategori krävs</Text>}
-
-      <Controller
-        control={control}
-        name="address"
-        rules={{ required: true }}
-        render={({ field }) => (
-          <TextInput
-            placeholder="Adress"
-            value={field.value}
-            onChangeText={field.onChange as any}
-            placeholderTextColor={placeholderColor}
-            style={[styles.input, { color: inputTextColor }]}
-          />
-        )}
-      />
-
-      <Controller
-        control={control}
-        name="city"
-        render={({ field }) => (
-          <TextInput
-            placeholder="Stad"
-            value={field.value}
-            onChangeText={field.onChange as any}
-            placeholderTextColor={placeholderColor}
-            style={[styles.input, { color: inputTextColor }]}
-          />
-        )}
-      />
-
-      <Controller
-        control={control}
-        name="postalCode"
-        render={({ field }) => (
-          <TextInput
-            placeholder="Postnummer"
-            value={field.value}
-            onChangeText={field.onChange as any}
-            placeholderTextColor={placeholderColor}
-            style={[styles.input, { color: inputTextColor }]}
-          />
-        )}
-      />
-
-      <Controller
-        control={control}
-        name="imageUri"
-        render={({ field }: any) => (
-          <>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Controller
+          control={control}
+          name="name"
+          rules={{ required: true }}
+          render={({ field }) => (
             <TextInput
-              placeholder="Bild-URL (valfritt)"
+              placeholder="Namn"
               value={field.value}
               onChangeText={field.onChange as any}
               placeholderTextColor={placeholderColor}
               style={[styles.input, { color: inputTextColor }]}
             />
-            <View style={{ flexDirection: "row", gap: 12, marginTop: 8 }}>
-              <Pressable
-                onPress={async () => {
-                  await pickImage();
-                }}
-                style={({ pressed }) => ({
-                  backgroundColor: "#eee",
-                  padding: 8,
-                  borderRadius: 8,
-                })}
-              >
-                <Text>Välj bild</Text>
-              </Pressable>
-              <Pressable
-                onPress={async () => {
-                  await takePhoto();
-                }}
-                style={({ pressed }) => ({
-                  backgroundColor: "#eee",
-                  padding: 8,
-                  borderRadius: 8,
-                })}
-              >
-                <Text>Ta bild</Text>
-              </Pressable>
-            </View>
-          </>
-        )}
-      />
-      {watchedImage ? (
-        <Image
-          source={{ uri: watchedImage }}
-          style={{ width: 120, height: 80, borderRadius: 6, marginTop: 8 }}
+          )}
         />
-      ) : null}
-      <Text style={{ fontSize: 16, fontWeight: "600" }}>
-        Välj plats på karta
-      </Text>
-      <Pressable
-        onPress={() => {
-          setTempSelected(
-            selected ?? {
-              latitude: Number(watchedLat),
-              longitude: Number(watchedLng),
-            }
-          );
-          setModalVisible(true);
-        }}
-        style={({ pressed }) => ({
-          marginVertical: 8,
-        })}
-      >
-        <View style={[styles.input, { justifyContent: "center" }]}>
-          <Text>
-            {selected
-              ? `Vald: ${selected.latitude.toFixed(
-                  6
-                )}, ${selected.longitude.toFixed(6)}`
-              : "Plats: klicka för att öppna kartan"}
-          </Text>
-        </View>
-      </Pressable>
+        {errors.name && <Text style={{ color: "red" }}>Namn krävs</Text>}
 
-      <Modal visible={modalVisible} animationType="slide">
-        <SafeAreaView style={{ flex: 1 }}>
-          <View style={{ flex: 1 }}>
-            <MapPicker
-              initial={
-                tempSelected ?? {
-                  latitude: Number(watchedLat),
-                  longitude: Number(watchedLng),
-                }
+        <Controller
+          control={control}
+          name="category"
+          rules={{ required: true }}
+          render={({ field }) => (
+            <TextInput
+              placeholder="Kategori"
+              value={field.value}
+              onChangeText={field.onChange as any}
+              placeholderTextColor={placeholderColor}
+              style={[styles.input, { color: inputTextColor }]}
+            />
+          )}
+        />
+        {errors.category && (
+          <Text style={{ color: "red" }}>Kategori krävs</Text>
+        )}
+
+        <Controller
+          control={control}
+          name="address"
+          rules={{ required: true }}
+          render={({ field }) => (
+            <TextInput
+              placeholder="Adress"
+              value={field.value}
+              onChangeText={field.onChange as any}
+              placeholderTextColor={placeholderColor}
+              style={[styles.input, { color: inputTextColor }]}
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="city"
+          render={({ field }) => (
+            <TextInput
+              placeholder="Stad"
+              value={field.value}
+              onChangeText={field.onChange as any}
+              placeholderTextColor={placeholderColor}
+              style={[styles.input, { color: inputTextColor }]}
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="postalCode"
+          render={({ field }) => (
+            <TextInput
+              placeholder="Postnummer"
+              value={field.value}
+              onChangeText={field.onChange as any}
+              placeholderTextColor={placeholderColor}
+              style={[styles.input, { color: inputTextColor }]}
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="imageUri"
+          render={({ field }: any) => (
+            <>
+              <TextInput
+                placeholder="Bild-URL (valfritt)"
+                value={field.value}
+                onChangeText={field.onChange as any}
+                placeholderTextColor={placeholderColor}
+                style={[styles.input, { color: inputTextColor }]}
+              />
+              <View style={{ flexDirection: "row", gap: 12, marginTop: 8 }}>
+                <Pressable
+                  onPress={async () => {
+                    await pickImage();
+                  }}
+                  style={({ pressed }) => ({
+                    backgroundColor: "#eee",
+                    padding: 8,
+                    borderRadius: 8,
+                  })}
+                >
+                  <Text>Välj bild</Text>
+                </Pressable>
+                <Pressable
+                  onPress={async () => {
+                    await takePhoto();
+                  }}
+                  style={({ pressed }) => ({
+                    backgroundColor: "#eee",
+                    padding: 8,
+                    borderRadius: 8,
+                  })}
+                >
+                  <Text>Ta bild</Text>
+                </Pressable>
+              </View>
+            </>
+          )}
+        />
+        {watchedImage ? (
+          <Image
+            source={{ uri: watchedImage }}
+            style={{ width: 120, height: 80, borderRadius: 6, marginTop: 8 }}
+          />
+        ) : null}
+        <Text style={{ fontSize: 16, fontWeight: "600" }}>
+          Välj plats på karta
+        </Text>
+        <Pressable
+          onPress={() => {
+            setTempSelected(
+              selected ?? {
+                latitude: Number(watchedLat),
+                longitude: Number(watchedLng),
               }
-              onSelect={(c) => {
-                setTempSelected(c);
-              }}
-            />
-          </View>
-          <View style={{ flexDirection: "row", gap: 12, padding: 12 }}>
-            <Button
-              title="Avbryt"
-              onPress={() => {
-                setModalVisible(false);
-                setTempSelected(null);
-              }}
-            />
-            <Button
-              title="Bekräfta plats"
-              onPress={() => {
-                if (tempSelected) {
-                  setSelected(tempSelected);
-                  setValue("lat", String(tempSelected.latitude));
-                  setValue("lng", String(tempSelected.longitude));
-                }
-                setModalVisible(false);
-              }}
-            />
-          </View>
-        </SafeAreaView>
-      </Modal>
-      <Controller
-        control={control}
-        name="phone"
-        render={({ field }: any) => (
-          <TextInput
-            placeholder="Telefon"
-            value={field.value}
-            onChangeText={field.onChange as any}
-            placeholderTextColor={placeholderColor}
-            style={[styles.input, { color: inputTextColor }]}
-          />
-        )}
-      />
-
-      <Controller
-        control={control}
-        name="hours"
-        render={({ field }: any) => (
-          <TextInput
-            placeholder="Öppettider"
-            value={field.value}
-            onChangeText={field.onChange as any}
-            placeholderTextColor={placeholderColor}
-            style={[styles.input, { color: inputTextColor }]}
-          />
-        )}
-      />
-
-      <Controller
-        control={control}
-        name="description"
-        render={({ field }: any) => (
-          <TextInput
-            placeholder="Beskrivning"
-            value={field.value}
-            onChangeText={field.onChange as any}
-            placeholderTextColor={placeholderColor}
-            style={[styles.input, styles.multiline, { color: inputTextColor }]}
-            multiline
-          />
-        )}
-      />
-      <Pressable
-        onPress={handleSubmit(onSave)}
-        disabled={!canSave}
-        style={[
-          {
-            backgroundColor: canSave ? "blue" : "gray",
-            borderRadius: 8,
-            padding: 12,
-            alignItems: "center",
+            );
+            setModalVisible(true);
+          }}
+          style={({ pressed }) => ({
             marginVertical: 8,
-          },
-        ]}
-      >
-        <Text style={{ color: "white" }}>Spara butik</Text>
-      </Pressable>
-    </ScrollView>
+          })}
+        >
+          <View style={[styles.input, { justifyContent: "center" }]}>
+            <Text>
+              {selected
+                ? `Vald: ${selected.latitude.toFixed(
+                    6
+                  )}, ${selected.longitude.toFixed(6)}`
+                : "Plats: klicka för att öppna kartan"}
+            </Text>
+          </View>
+        </Pressable>
+
+        <Modal visible={modalVisible} animationType="slide">
+          <SafeAreaView style={{ flex: 1 }}>
+            <View style={{ flex: 1 }}>
+              <MapPicker
+                initial={
+                  tempSelected ?? {
+                    latitude: Number(watchedLat),
+                    longitude: Number(watchedLng),
+                  }
+                }
+                onSelect={(c) => {
+                  setTempSelected(c);
+                }}
+              />
+            </View>
+            <View style={{ flexDirection: "row", gap: 12, padding: 12 }}>
+              <Button
+                title="Avbryt"
+                onPress={() => {
+                  setModalVisible(false);
+                  setTempSelected(null);
+                }}
+              />
+              <Button
+                title="Bekräfta plats"
+                onPress={() => {
+                  if (tempSelected) {
+                    setSelected(tempSelected);
+                    setValue("lat", String(tempSelected.latitude));
+                    setValue("lng", String(tempSelected.longitude));
+                  }
+                  setModalVisible(false);
+                }}
+              />
+            </View>
+          </SafeAreaView>
+        </Modal>
+        <Controller
+          control={control}
+          name="phone"
+          render={({ field }: any) => (
+            <TextInput
+              placeholder="Telefon"
+              value={field.value}
+              onChangeText={field.onChange as any}
+              placeholderTextColor={placeholderColor}
+              style={[styles.input, { color: inputTextColor }]}
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="hours"
+          render={({ field }: any) => (
+            <TextInput
+              placeholder="Öppettider"
+              value={field.value}
+              onChangeText={field.onChange as any}
+              placeholderTextColor={placeholderColor}
+              style={[styles.input, { color: inputTextColor }]}
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
+          name="description"
+          render={({ field }: any) => (
+            <TextInput
+              placeholder="Beskrivning"
+              value={field.value}
+              onChangeText={field.onChange as any}
+              placeholderTextColor={placeholderColor}
+              style={[
+                styles.input,
+                styles.multiline,
+                { color: inputTextColor },
+              ]}
+              multiline
+            />
+          )}
+        />
+        <Pressable
+          onPress={handleSubmit(onSave)}
+          disabled={!canSave}
+          style={[
+            {
+              backgroundColor: canSave ? "blue" : "gray",
+              borderRadius: 8,
+              padding: 12,
+              alignItems: "center",
+              marginVertical: 8,
+            },
+          ]}
+        >
+          <Text style={{ color: "white" }}>Spara butik</Text>
+        </Pressable>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
