@@ -1,10 +1,10 @@
 import type { LocalShop } from "@/data/localshops";
 import { FontAwesome } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import React from "react";
 import {
   Button,
   GestureResponderEvent,
-  Image,
   Linking,
   Pressable,
   StyleSheet,
@@ -39,7 +39,7 @@ export default function LocalShopCard({
 
   return (
     <View style={styles.card}>
-      <Image source={shop.image} style={styles.image} resizeMode="cover" />
+      <Image source={shop.image} style={styles.image} contentFit="cover" />
       <View style={styles.content}>
         <TouchableOpacity
           onPress={onPress}

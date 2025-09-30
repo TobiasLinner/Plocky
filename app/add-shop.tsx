@@ -1,17 +1,21 @@
 import MapPicker from "@/components/map-picker";
 import { useShopsStore } from "@/stores/shops-store";
+import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Button,
   Image,
+  Keyboard,
+  KeyboardAvoidingView,
   Modal,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -75,37 +79,16 @@ export default function AddShopScreen() {
   const watchedImage = watch("imageUri");
 
   const pickImage = async () => {
-    let ImagePicker: any;
-    try {
-      ImagePicker = require("expo-image-picker");
-    } catch (err) {
-      alert(
-        "Image picker finns inte i den här klienten. Bygg en dev-client eller kör på en enhet där native-modulen är tillgänglig."
-      );
-      return;
-    }
-
-    if (
-      !ImagePicker ||
-      typeof ImagePicker.requestMediaLibraryPermissionsAsync !== "function" ||
-      typeof ImagePicker.launchImageLibraryAsync !== "function"
-    ) {
-      alert(
-        "Image picker-native-modulen är inte tillgänglig i den här klienten. Bygg en dev-client eller kör på en enhet där native-modulen är länkad."
-      );
-      return;
-    }
-
     try {
       const { status } =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted" && status !== "limited") {
+      const s: any = status;
+      if (s !== "granted" && s !== "limited") {
         alert("Behöver åtkomst till bilder för att välja bild.");
         return;
       }
 
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         quality: 0.7,
       });
@@ -114,34 +97,16 @@ export default function AddShopScreen() {
         const uri = result.assets[0].uri;
         setValue("imageUri", uri);
       }
-    } catch (e) {}
+    } catch (e) {
+      console.warn(e);
+    }
   };
 
   const takePhoto = async () => {
-    let ImagePicker: any;
-    try {
-      ImagePicker = require("expo-image-picker");
-    } catch (err) {
-      alert(
-        "Kamera finns inte i den här klienten. Bygg en dev-client eller kör på en enhet där native-modulen är tillgänglig."
-      );
-      return;
-    }
-
-    if (
-      !ImagePicker ||
-      typeof ImagePicker.requestCameraPermissionsAsync !== "function" ||
-      typeof ImagePicker.launchCameraAsync !== "function"
-    ) {
-      alert(
-        "Kamera-native-modulen är inte tillgänglig i den här klienten. Bygg en dev-client eller kör på en enhet där native-modulen är länkad."
-      );
-      return;
-    }
-
     try {
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
-      if (status !== "granted" && status !== "limited") {
+      const s: any = status;
+      if (s !== "granted" && s !== "limited") {
         alert("Behöver åtkomst till kameran för att ta ett foto.");
         return;
       }
@@ -155,7 +120,9 @@ export default function AddShopScreen() {
         const uri = result.assets[0].uri;
         setValue("imageUri", uri);
       }
-    } catch (e) {}
+    } catch (e) {
+      console.warn(e);
+    }
   };
 
   const canSave =
@@ -183,6 +150,7 @@ export default function AddShopScreen() {
       phone: values.phone,
       hours: values.hours,
       description: values.description,
+      imageUri: values.imageUri,
     });
     reset();
     setSelected(null);
@@ -191,260 +159,276 @@ export default function AddShopScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <Controller
-          control={control}
-          name="name"
-          rules={{ required: true }}
-          render={({ field }) => (
-            <TextInput
-              placeholder="Namn"
-              value={field.value}
-              onChangeText={field.onChange as any}
-              placeholderTextColor={placeholderColor}
-              style={[styles.input, { color: inputTextColor }]}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={"height"}
+      keyboardVerticalOffset={80}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <SafeAreaView style={{ flex: 1 }}>
+          <ScrollView
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={styles.container}
+          >
+            <Controller
+              control={control}
+              name="name"
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextInput
+                  placeholder="Namn"
+                  value={field.value}
+                  onChangeText={field.onChange as any}
+                  placeholderTextColor={placeholderColor}
+                  style={[styles.input, { color: inputTextColor }]}
+                />
+              )}
             />
-          )}
-        />
-        {errors.name && <Text style={{ color: "red" }}>Namn krävs</Text>}
+            {errors.name && <Text style={{ color: "red" }}>Namn krävs</Text>}
 
-        <Controller
-          control={control}
-          name="category"
-          rules={{ required: true }}
-          render={({ field }) => (
-            <TextInput
-              placeholder="Kategori"
-              value={field.value}
-              onChangeText={field.onChange as any}
-              placeholderTextColor={placeholderColor}
-              style={[styles.input, { color: inputTextColor }]}
+            <Controller
+              control={control}
+              name="category"
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextInput
+                  placeholder="Kategori"
+                  value={field.value}
+                  onChangeText={field.onChange as any}
+                  placeholderTextColor={placeholderColor}
+                  style={[styles.input, { color: inputTextColor }]}
+                />
+              )}
             />
-          )}
-        />
-        {errors.category && (
-          <Text style={{ color: "red" }}>Kategori krävs</Text>
-        )}
+            {errors.category && (
+              <Text style={{ color: "red" }}>Kategori krävs</Text>
+            )}
 
-        <Controller
-          control={control}
-          name="address"
-          rules={{ required: true }}
-          render={({ field }) => (
-            <TextInput
-              placeholder="Adress"
-              value={field.value}
-              onChangeText={field.onChange as any}
-              placeholderTextColor={placeholderColor}
-              style={[styles.input, { color: inputTextColor }]}
+            <Controller
+              control={control}
+              name="address"
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextInput
+                  placeholder="Adress"
+                  value={field.value}
+                  onChangeText={field.onChange as any}
+                  placeholderTextColor={placeholderColor}
+                  style={[styles.input, { color: inputTextColor }]}
+                />
+              )}
             />
-          )}
-        />
 
-        <Controller
-          control={control}
-          name="city"
-          render={({ field }) => (
-            <TextInput
-              placeholder="Stad"
-              value={field.value}
-              onChangeText={field.onChange as any}
-              placeholderTextColor={placeholderColor}
-              style={[styles.input, { color: inputTextColor }]}
+            <Controller
+              control={control}
+              name="city"
+              render={({ field }) => (
+                <TextInput
+                  placeholder="Stad"
+                  value={field.value}
+                  onChangeText={field.onChange as any}
+                  placeholderTextColor={placeholderColor}
+                  style={[styles.input, { color: inputTextColor }]}
+                />
+              )}
             />
-          )}
-        />
 
-        <Controller
-          control={control}
-          name="postalCode"
-          render={({ field }) => (
-            <TextInput
-              placeholder="Postnummer"
-              value={field.value}
-              onChangeText={field.onChange as any}
-              placeholderTextColor={placeholderColor}
-              style={[styles.input, { color: inputTextColor }]}
+            <Controller
+              control={control}
+              name="postalCode"
+              render={({ field }) => (
+                <TextInput
+                  placeholder="Postnummer"
+                  value={field.value}
+                  onChangeText={field.onChange as any}
+                  placeholderTextColor={placeholderColor}
+                  style={[styles.input, { color: inputTextColor }]}
+                />
+              )}
             />
-          )}
-        />
 
-        <Controller
-          control={control}
-          name="imageUri"
-          render={({ field }: any) => (
-            <>
-              <TextInput
-                placeholder="Bild-URL (valfritt)"
-                value={field.value}
-                onChangeText={field.onChange as any}
-                placeholderTextColor={placeholderColor}
-                style={[styles.input, { color: inputTextColor }]}
+            <Controller
+              control={control}
+              name="imageUri"
+              render={({ field }: any) => (
+                <>
+                  <TextInput
+                    placeholder="Bild-URL (valfritt)"
+                    value={field.value}
+                    onChangeText={field.onChange as any}
+                    placeholderTextColor={placeholderColor}
+                    style={[styles.input, { color: inputTextColor }]}
+                  />
+                  <View style={{ flexDirection: "row", gap: 12, marginTop: 8 }}>
+                    <Pressable
+                      onPress={async () => {
+                        await pickImage();
+                      }}
+                      style={({ pressed }) => ({
+                        backgroundColor: "#eee",
+                        padding: 8,
+                        borderRadius: 8,
+                      })}
+                    >
+                      <Text>Välj bild</Text>
+                    </Pressable>
+                    <Pressable
+                      onPress={async () => {
+                        await takePhoto();
+                      }}
+                      style={({ pressed }) => ({
+                        backgroundColor: "#eee",
+                        padding: 8,
+                        borderRadius: 8,
+                      })}
+                    >
+                      <Text>Ta bild</Text>
+                    </Pressable>
+                  </View>
+                </>
+              )}
+            />
+            {watchedImage ? (
+              <Image
+                source={{ uri: watchedImage }}
+                style={{
+                  width: 120,
+                  height: 80,
+                  borderRadius: 6,
+                  marginTop: 8,
+                }}
               />
-              <View style={{ flexDirection: "row", gap: 12, marginTop: 8 }}>
-                <Pressable
-                  onPress={async () => {
-                    await pickImage();
-                  }}
-                  style={({ pressed }) => ({
-                    backgroundColor: "#eee",
-                    padding: 8,
-                    borderRadius: 8,
-                  })}
-                >
-                  <Text>Välj bild</Text>
-                </Pressable>
-                <Pressable
-                  onPress={async () => {
-                    await takePhoto();
-                  }}
-                  style={({ pressed }) => ({
-                    backgroundColor: "#eee",
-                    padding: 8,
-                    borderRadius: 8,
-                  })}
-                >
-                  <Text>Ta bild</Text>
-                </Pressable>
-              </View>
-            </>
-          )}
-        />
-        {watchedImage ? (
-          <Image
-            source={{ uri: watchedImage }}
-            style={{ width: 120, height: 80, borderRadius: 6, marginTop: 8 }}
-          />
-        ) : null}
-        <Text style={{ fontSize: 16, fontWeight: "600" }}>
-          Välj plats på karta
-        </Text>
-        <Pressable
-          onPress={() => {
-            setTempSelected(
-              selected ?? {
-                latitude: Number(watchedLat),
-                longitude: Number(watchedLng),
-              }
-            );
-            setModalVisible(true);
-          }}
-          style={({ pressed }) => ({
-            marginVertical: 8,
-          })}
-        >
-          <View style={[styles.input, { justifyContent: "center" }]}>
-            <Text>
-              {selected
-                ? `Vald: ${selected.latitude.toFixed(
-                    6
-                  )}, ${selected.longitude.toFixed(6)}`
-                : "Plats: klicka för att öppna kartan"}
+            ) : null}
+            <Text style={{ fontSize: 16, fontWeight: "600" }}>
+              Välj plats på karta
             </Text>
-          </View>
-        </Pressable>
-
-        <Modal visible={modalVisible} animationType="slide">
-          <SafeAreaView style={{ flex: 1 }}>
-            <View style={{ flex: 1 }}>
-              <MapPicker
-                initial={
-                  tempSelected ?? {
+            <Pressable
+              onPress={() => {
+                setTempSelected(
+                  selected ?? {
                     latitude: Number(watchedLat),
                     longitude: Number(watchedLng),
                   }
-                }
-                onSelect={(c) => {
-                  setTempSelected(c);
-                }}
-              />
-            </View>
-            <View style={{ flexDirection: "row", gap: 12, padding: 12 }}>
-              <Button
-                title="Avbryt"
-                onPress={() => {
-                  setModalVisible(false);
-                  setTempSelected(null);
-                }}
-              />
-              <Button
-                title="Bekräfta plats"
-                onPress={() => {
-                  if (tempSelected) {
-                    setSelected(tempSelected);
-                    setValue("lat", String(tempSelected.latitude));
-                    setValue("lng", String(tempSelected.longitude));
-                  }
-                  setModalVisible(false);
-                }}
-              />
-            </View>
-          </SafeAreaView>
-        </Modal>
-        <Controller
-          control={control}
-          name="phone"
-          render={({ field }: any) => (
-            <TextInput
-              placeholder="Telefon"
-              value={field.value}
-              onChangeText={field.onChange as any}
-              placeholderTextColor={placeholderColor}
-              style={[styles.input, { color: inputTextColor }]}
-            />
-          )}
-        />
+                );
+                setModalVisible(true);
+              }}
+              style={({ pressed }) => ({
+                marginVertical: 8,
+              })}
+            >
+              <View style={[styles.input, { justifyContent: "center" }]}>
+                <Text>
+                  {selected
+                    ? `Vald: ${selected.latitude.toFixed(
+                        6
+                      )}, ${selected.longitude.toFixed(6)}`
+                    : "Plats: klicka för att öppna kartan"}
+                </Text>
+              </View>
+            </Pressable>
 
-        <Controller
-          control={control}
-          name="hours"
-          render={({ field }: any) => (
-            <TextInput
-              placeholder="Öppettider"
-              value={field.value}
-              onChangeText={field.onChange as any}
-              placeholderTextColor={placeholderColor}
-              style={[styles.input, { color: inputTextColor }]}
+            <Modal visible={modalVisible} animationType="slide">
+              <SafeAreaView style={{ flex: 1 }}>
+                <View style={{ flex: 1 }}>
+                  <MapPicker
+                    initial={
+                      tempSelected ?? {
+                        latitude: Number(watchedLat),
+                        longitude: Number(watchedLng),
+                      }
+                    }
+                    onSelect={(c) => {
+                      setTempSelected(c);
+                    }}
+                  />
+                </View>
+                <View style={{ flexDirection: "row", gap: 12, padding: 12 }}>
+                  <Button
+                    title="Avbryt"
+                    onPress={() => {
+                      setModalVisible(false);
+                      setTempSelected(null);
+                    }}
+                  />
+                  <Button
+                    title="Bekräfta plats"
+                    onPress={() => {
+                      if (tempSelected) {
+                        setSelected(tempSelected);
+                        setValue("lat", String(tempSelected.latitude));
+                        setValue("lng", String(tempSelected.longitude));
+                      }
+                      setModalVisible(false);
+                    }}
+                  />
+                </View>
+              </SafeAreaView>
+            </Modal>
+            <Controller
+              control={control}
+              name="phone"
+              render={({ field }: any) => (
+                <TextInput
+                  placeholder="Telefon"
+                  value={field.value}
+                  onChangeText={field.onChange as any}
+                  placeholderTextColor={placeholderColor}
+                  style={[styles.input, { color: inputTextColor }]}
+                />
+              )}
             />
-          )}
-        />
 
-        <Controller
-          control={control}
-          name="description"
-          render={({ field }: any) => (
-            <TextInput
-              placeholder="Beskrivning"
-              value={field.value}
-              onChangeText={field.onChange as any}
-              placeholderTextColor={placeholderColor}
+            <Controller
+              control={control}
+              name="hours"
+              render={({ field }: any) => (
+                <TextInput
+                  placeholder="Öppettider"
+                  value={field.value}
+                  onChangeText={field.onChange as any}
+                  placeholderTextColor={placeholderColor}
+                  style={[styles.input, { color: inputTextColor }]}
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="description"
+              render={({ field }: any) => (
+                <TextInput
+                  placeholder="Beskrivning"
+                  value={field.value}
+                  onChangeText={field.onChange as any}
+                  placeholderTextColor={placeholderColor}
+                  style={[
+                    styles.input,
+                    styles.multiline,
+                    { color: inputTextColor },
+                  ]}
+                  multiline
+                />
+              )}
+            />
+            <Pressable
+              onPress={handleSubmit(onSave)}
+              disabled={!canSave}
               style={[
-                styles.input,
-                styles.multiline,
-                { color: inputTextColor },
+                {
+                  backgroundColor: canSave ? "blue" : "gray",
+                  borderRadius: 8,
+                  padding: 12,
+                  alignItems: "center",
+                  marginVertical: 8,
+                },
               ]}
-              multiline
-            />
-          )}
-        />
-        <Pressable
-          onPress={handleSubmit(onSave)}
-          disabled={!canSave}
-          style={[
-            {
-              backgroundColor: canSave ? "blue" : "gray",
-              borderRadius: 8,
-              padding: 12,
-              alignItems: "center",
-              marginVertical: 8,
-            },
-          ]}
-        >
-          <Text style={{ color: "white" }}>Spara butik</Text>
-        </Pressable>
-      </ScrollView>
-    </SafeAreaView>
+            >
+              <Text style={{ color: "white" }}>Spara butik</Text>
+            </Pressable>
+          </ScrollView>
+        </SafeAreaView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -452,6 +436,12 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     gap: 12,
+    paddingBottom: 80,
+  },
+  inner: {
+    padding: 24,
+    flex: 1,
+    justifyContent: "space-around",
   },
   title: {
     fontSize: 20,
@@ -463,6 +453,7 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     borderRadius: 8,
     padding: 10,
+    height: 40,
     backgroundColor: "#fff",
   },
   row: { flexDirection: "row", gap: 12 },
