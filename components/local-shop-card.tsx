@@ -1,10 +1,12 @@
 import type { LocalShop } from "@/data/localshops";
+import { FontAwesome } from "@expo/vector-icons";
 import React from "react";
 import {
   Button,
   GestureResponderEvent,
   Image,
   Linking,
+  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -49,8 +51,30 @@ export default function LocalShopCard({
           <Text style={styles.address}>
             {shop.address}, {shop.city}
           </Text>
-          {<Text style={styles.phone}>{shop.phone}</Text>}
+          {shop.hours ? <Text style={styles.hours}>{shop.hours}</Text> : null}
         </TouchableOpacity>
+
+        {shop.phone ? (
+          <Pressable
+            onPress={() => {
+              Linking.canOpenURL(`tel:${shop.phone}`).then((supported) => {
+                if (supported) Linking.openURL(`tel:${shop.phone}`);
+              });
+            }}
+            style={({ pressed }) => [
+              styles.phoneWrapper,
+              pressed && styles.phonePressed,
+            ]}
+          >
+            <FontAwesome
+              name="phone"
+              size={14}
+              color="#007AFF"
+              style={styles.phoneIcon}
+            />
+            <Text style={styles.phone}>{shop.phone}</Text>
+          </Pressable>
+        ) : null}
 
         {isExpanded ? (
           <View>
@@ -127,8 +151,27 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   phone: {
-    marginTop: 6,
     fontSize: 12,
     color: "#007AFF",
+  },
+  phoneWrapper: {
+    marginTop: 6,
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    paddingVertical: 4,
+    paddingHorizontal: 6,
+    borderRadius: 4,
+  },
+  phoneIcon: {
+    marginRight: 5,
+  },
+  phonePressed: {
+    opacity: 0.6,
+  },
+  hours: {
+    fontSize: 12,
+    color: "#666",
+    marginTop: 4,
   },
 });

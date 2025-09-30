@@ -24,7 +24,7 @@ export default function LocalShopsScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
       <View>
         <ScrollView>
           {shops.map((s) => (

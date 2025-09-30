@@ -31,7 +31,7 @@ export default function LocalShopsMap({ focusedLocation }: Props) {
 
   const initialCamera = {
     coordinates: { latitude: 57.49639217523064, longitude: 13.066515081818025 },
-    zoom: 6,
+    zoom: 10.8,
   };
 
   const markers = shopsToDisplay.map((shop) => ({
@@ -123,7 +123,7 @@ export default function LocalShopsMap({ focusedLocation }: Props) {
         style={{ flex: 1 }}
         cameraPosition={{
           coordinates: cameraCoordinates,
-          zoom: focusedLocation ? 8 : initialCamera.zoom,
+          zoom: initialCamera.zoom,
         }}
         markers={markers}
       />
