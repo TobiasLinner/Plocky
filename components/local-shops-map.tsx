@@ -1,3 +1,4 @@
+import { useLocation } from "@/context/location-context";
 import type { LocalShop } from "@/data/localshops";
 import { useShopsStore } from "@/stores/shops-store";
 import { GoogleMaps } from "expo-maps";
@@ -14,6 +15,7 @@ type Props = {
 
 export default function LocalShopsMap({ focusedLocation }: Props) {
   const shops = useShopsStore((s) => s.shops);
+  const { userLocation } = useLocation();
 
   const categories: string[] = [];
   for (const s of shops) {
@@ -30,8 +32,8 @@ export default function LocalShopsMap({ focusedLocation }: Props) {
       : shops;
 
   const initialCamera = {
-    coordinates: { latitude: 57.49639217523064, longitude: 13.066515081818025 },
-    zoom: 10.8,
+    coordinates: { latitude: userLocation?.latitude || 57.49639217523064, longitude: userLocation?.longitude || 13.066515081818025 },
+    zoom: userLocation ? 16 : 8,
   };
 
   const markers = shopsToDisplay.map((shop) => ({
