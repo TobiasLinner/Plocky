@@ -1,4 +1,6 @@
+import { useLocation } from "@/context/location-context";
 import type { LocalShop } from "@/data/localshops";
+import { calculateDistance, formatDistance } from "@/utils/distance";
 import { FontAwesome } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import React from "react";
@@ -25,9 +27,20 @@ export default function LocalShopCard({
   isExpanded,
   onShowOnMap,
 }: Props) {
+  const { userLocation } = useLocation();
+
   const openMaps = () => {
     Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${shop.lat},${shop.lng}`);
   };
+
+  const distance = userLocation
+    ? calculateDistance(
+      userLocation.latitude,
+      userLocation.longitude,
+      shop.lat,
+      shop.lng
+    )
+    : null;
 
   return (
     <View style={styles.card}>
@@ -43,6 +56,9 @@ export default function LocalShopCard({
           <Text style={styles.address}>
             {shop.address}, {shop.city}
           </Text>
+          {distance !== null && (
+            <Text style={styles.distance}>{formatDistance(distance)}</Text>
+          )}
           <Text style={styles.hours}>{shop.hours}</Text>
         </TouchableOpacity>
 
@@ -139,6 +155,12 @@ const styles = StyleSheet.create({
   address: {
     fontSize: 13,
     color: "#333",
+  },
+  distance: {
+    fontSize: 12,
+    color: "#007AFF",
+    fontWeight: "600",
+    marginTop: 2,
   },
   phone: {
     fontSize: 12,

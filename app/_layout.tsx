@@ -7,6 +7,7 @@ import { Drawer } from "expo-router/drawer";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
+import { LocationProvider } from "@/context/location-context";
 import { MapProvider } from "@/context/map-context";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { Ionicons } from "@expo/vector-icons";
@@ -21,13 +22,14 @@ export default function RootLayout() {
   return (
     <>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <MapProvider>
-          <Drawer
-            screenOptions={{
-              drawerActiveTintColor: "#e91e63",
-              drawerHideStatusBarOnOpen: true,
-            }}
-          >
+        <LocationProvider>
+          <MapProvider>
+            <Drawer
+              screenOptions={{
+                drawerActiveTintColor: "#e91e63",
+                drawerHideStatusBarOnOpen: true,
+              }}
+            >
             <Drawer.Screen
               name="index"
               options={{
@@ -70,7 +72,8 @@ export default function RootLayout() {
               }}
             />
           </Drawer>
-        </MapProvider>
+          </MapProvider>
+        </LocationProvider>
         <StatusBar style="auto" />
       </ThemeProvider>
     </>

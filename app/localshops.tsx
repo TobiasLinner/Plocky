@@ -1,10 +1,11 @@
 import LocalShopCard from "@/components/local-shop-card";
+import { useLocation } from "@/context/location-context";
 import { useMap } from "@/context/map-context";
 import { useShopsStore } from "@/stores/shops-store";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LocalShopsScreen() {
@@ -12,6 +13,13 @@ export default function LocalShopsScreen() {
   const [selectedShopId, setSelectedShopId] = useState<string | null>(null);
   const router = useRouter();
   const { setFocusedLocation } = useMap();
+  const { userLocation, hasPermission, requestLocation, loading, error } = useLocation();
+
+  useEffect(() => {
+    if (!hasPermission && !userLocation) {
+      requestLocation();
+    }
+  }, [hasPermission, userLocation, requestLocation]);
 
   const shop = shops.find((s) => s.id === selectedShopId) ?? null;
 
@@ -26,6 +34,32 @@ export default function LocalShopsScreen() {
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
       <View>
+        {!userLocation && !loading && !error && (
+          <View style={styles.locationBar}>
+            <Text style={styles.locationText}>
+              Tryck för att aktivera platsbaserat avstånd
+            </Text>
+            <Pressable onPress={requestLocation} style={styles.locationButton}>
+              <Text style={styles.locationButtonText}>Aktivera</Text>
+            </Pressable>
+          </View>
+        )}
+
+        {loading && (
+          <View style={styles.locationBar}>
+            <Text style={styles.locationText}>Hämtar din plats...</Text>
+          </View>
+        )}
+
+        {error && (
+          <View style={styles.locationBar}>
+            <Text style={[styles.locationText, { color: 'red' }]}>{error}</Text>
+            <Pressable onPress={requestLocation} style={styles.locationButton}>
+              <Text style={styles.locationButtonText}>Försök igen</Text>
+            </Pressable>
+          </View>
+        )}
+
         <ScrollView>
           {shops.map((s) => (
             <LocalShopCard
@@ -76,5 +110,32 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+  },
+  locationBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#f8f9fa",
+    padding: 12,
+    marginHorizontal: 8,
+    marginBottom: 8,
+    borderRadius: 8,
+  },
+  locationText: {
+    fontSize: 14,
+    color: "#666",
+    flex: 1,
+  },
+  locationButton: {
+    backgroundColor: "#007AFF",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+    marginLeft: 8,
+  },
+  locationButtonText: {
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "600",
   },
 });
