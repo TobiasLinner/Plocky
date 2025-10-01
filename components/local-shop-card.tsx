@@ -16,9 +16,9 @@ import {
 
 type Props = {
   shop: LocalShop;
-  onPress?: () => void;
-  isExpanded?: boolean;
-  onShowOnMap?: () => void;
+  onPress: () => void;
+  isExpanded: boolean;
+  onShowOnMap: () => void;
 };
 
 export default function LocalShopCard({
@@ -84,9 +84,7 @@ export default function LocalShopCard({
 
         {isExpanded ? (
           <View>
-            {shop.description ? (
-              <Text style={styles.description}>{shop.description}</Text>
-            ) : null}
+            <Text style={styles.description}>{shop.description}</Text>
             <View style={styles.buttons}>
               <View style={styles.buttonWrapper}>
                 <Button title="Plockykarta" onPress={onShowOnMap} />
@@ -158,7 +156,7 @@ const styles = StyleSheet.create({
   },
   distance: {
     fontSize: 12,
-    color: "#007AFF",
+    color: "#e01f1fff",
     fontWeight: "600",
     marginTop: 2,
   },
