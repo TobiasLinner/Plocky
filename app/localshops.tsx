@@ -2,6 +2,7 @@ import LocalShopCard from "@/components/local-shop-card";
 import { useLocation } from "@/context/location-context";
 import { useMap } from "@/context/map-context";
 import { useShopsStore } from "@/stores/shops-store";
+import { calculateDistance } from "@/utils/distance";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -61,7 +62,12 @@ export default function LocalShopsScreen() {
         )}
 
         <ScrollView>
-          {shops.map((s) => (
+          {shops.sort((a, b) => {
+            if (!userLocation) return 0;
+            const distanceA = calculateDistance(userLocation.latitude, userLocation.longitude, a.lat, a.lng);
+            const distanceB = calculateDistance(userLocation.latitude, userLocation.longitude, b.lat, b.lng);
+            return distanceA - distanceB;
+          }).map((s) => (
             <LocalShopCard
               key={s.id}
               shop={s}
