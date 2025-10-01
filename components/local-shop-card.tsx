@@ -4,18 +4,17 @@ import { Image } from "expo-image";
 import React from "react";
 import {
   Button,
-  GestureResponderEvent,
   Linking,
   Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 
 type Props = {
   shop: LocalShop;
-  onPress?: (e: GestureResponderEvent) => void;
+  onPress?: () => void;
   isExpanded?: boolean;
   onShowOnMap?: () => void;
 };
@@ -27,14 +26,7 @@ export default function LocalShopCard({
   onShowOnMap,
 }: Props) {
   const openMaps = () => {
-    const lat = shop.lat;
-    const lng = shop.lng;
-    const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
-    Linking.canOpenURL(url).then((supported) => {
-      if (supported) {
-        Linking.openURL(url);
-      }
-    });
+    Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${shop.lat},${shop.lng}`);
   };
 
   return (
@@ -51,15 +43,13 @@ export default function LocalShopCard({
           <Text style={styles.address}>
             {shop.address}, {shop.city}
           </Text>
-          {shop.hours ? <Text style={styles.hours}>{shop.hours}</Text> : null}
+          <Text style={styles.hours}>{shop.hours}</Text>
         </TouchableOpacity>
 
         {shop.phone ? (
           <Pressable
             onPress={() => {
-              Linking.canOpenURL(`tel:${shop.phone}`).then((supported) => {
-                if (supported) Linking.openURL(`tel:${shop.phone}`);
-              });
+              Linking.openURL(`tel:${shop.phone}`);
             }}
             style={({ pressed }) => [
               styles.phoneWrapper,

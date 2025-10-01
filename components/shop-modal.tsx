@@ -34,14 +34,7 @@ export default function ShopModal({
               <Button
                 title="Öppna i kartor"
                 onPress={() => {
-                  const lat = shop.lat;
-                  const lng = shop.lng;
-                  let url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
-                  Linking.canOpenURL(url).then((supported) => {
-                    if (supported) {
-                      Linking.openURL(url);
-                    }
-                  });
+                  Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${shop.lat},${shop.lng}`);
                 }}
               />
               <View style={{ width: 12 }} />
