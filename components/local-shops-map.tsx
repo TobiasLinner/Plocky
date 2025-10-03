@@ -1,7 +1,9 @@
 import { useLocation } from "@/context/location-context";
 import type { LocalShop } from "@/data/localshops";
+import { useCategoryImage } from "@/hooks/use-category-images";
 import { useShopsStore } from "@/stores/shops-store";
 import { GoogleMaps } from "expo-maps";
+import { GoogleMapsMarker } from "expo-maps/build/google/GoogleMaps.types";
 import React, { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -36,22 +38,26 @@ export default function LocalShopsMap({ focusedLocation }: Props) {
     zoom: userLocation ? 16 : 8,
   };
 
-  const markers = shopsToDisplay.map((shop) => ({
-    id: shop.id,
-    coordinates: { latitude: shop.lat, longitude: shop.lng },
-    title: shop.name,
-    snippet: shop.category,
-  }));
+  const markers = shopsToDisplay.map((shop) => {
+    const categoryImage = useCategoryImage(shop.category);
 
+    return {
+      id: shop.id,
+      coordinates: { latitude: shop.lat, longitude: shop.lng },
+      title: shop.name,
+      snippet: shop.category,
+      icon: categoryImage ?? undefined
+    } satisfies GoogleMapsMarker;
+  });
   const cameraCoordinates = focusedLocation
     ? {
-        latitude: focusedLocation.latitude,
-        longitude: focusedLocation.longitude,
-      }
+      latitude: focusedLocation.latitude,
+      longitude: focusedLocation.longitude,
+    }
     : {
-        latitude: initialCamera.coordinates.latitude,
-        longitude: initialCamera.coordinates.longitude,
-      };
+      latitude: initialCamera.coordinates.latitude,
+      longitude: initialCamera.coordinates.longitude,
+    };
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["left", "right", "bottom"]}>
@@ -62,11 +68,10 @@ export default function LocalShopsMap({ focusedLocation }: Props) {
             style={[styles.tag, styles.filterToggle]}
           >
             <Text style={styles.tagText}>
-              {`Filter${
-                selectedCategories.length > 0
+              {`Filter${selectedCategories.length > 0
                   ? ` (${selectedCategories.length})`
                   : ""
-              }`}
+                }`}
             </Text>
             <Text style={[styles.tagText, { marginLeft: 8 }]}>▼</Text>
           </Pressable>
