@@ -1,50 +1,120 @@
-# Welcome to your Expo app 👋
+# Plocky - Lokal Mat Nära Dig
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+En React Native-app byggd med Expo för att hitta och stödja lokala matproducenter och gårdsbutiker i din närhet.
 
-## Get started
+## Projektbeskrivning
 
-1. Install dependencies
+Plocky är en mobil applikation som hjälper användare att upptäcka lokala matproducenter, gårdsbutiker och självplockställen i sin närhet. Appen erbjuder funktioner som kartvisning, avståndsmätning baserat på användarens plats, samt möjlighet att lägga till nya butiker. Målet är att stödja lokal matproduktion och ge användare enkel åtkomst till närproducerad mat.
 
-   ```bash
-   npm install
-   ```
+## Funktioner
 
-2. Start the app
+- 🏪 **Hitta lokala butiker**: Visa en lista över lokala matproducenter och gårdsbutiker
+- 🗺️ **Interaktiv karta**: Se alla butiker på en karta med kategorifiltrera
+- 📍 **Platsbaserade tjänster**: Beräkna avstånd till butiker baserat på din position
+- ➕ **Lägg till butiker**: Användare kan lägga till nya butiker med bilder och platsinformation
+- 🏠 **Navigering**: Få vägbeskrivning till butiker via Google Maps
+- 📱 **Telefonfunktion**: Ring butiker direkt från appen
+- 🎨 **Responsiv design**: Stöd för både ljust och mörkt tema
 
-   ```bash
-   npx expo start
-   ```
+## Byggning och Körning
 
-In the output, you'll find options to open the app in a
+### Installation
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
+1. Klona repot:
 ```bash
-npm run reset-project
+git clone https://github.com/TobiasLinner/Plocky.git
+cd Plucky
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Installera beroenden:
+```bash
+npm install
+```
 
-## Learn more
+3. Starta utvecklingsservern:
+```bash
+npm start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+#### Expo Go (för utveckling)
+1. Installera Expo Go-appen på din telefon - Om du har tur. Annars får du bygga appen och ladda ner på telefonen/emulatorn.
+2. Kör `npm start` och skanna QR-koden
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Använda Komponenter
 
-## Join the community
+### React Native Komponenter
+1. **View** - Används genomgående för layout och struktur
+2. **Text** - För all textvisning i appen
+3. **ScrollView** - För scrollbara listor av butiker och formulär
+4. **TouchableOpacity/Pressable** - För interaktiva element som knappar
+5. **TextInput** - För formulärfält vid tillägg av butiker
+6. **Modal** - För kartväljare och butiksinformation
+7. **Image** - För visning av butiksbilder
+8. **Button** - För primära aktionsknappa
 
-Join our community of developers creating universal apps.
+### Expo Komponenter
+1. **expo-image** - Optimerad bildvisning med caching
+2. **expo-router** - För navigation mellan skärmar med Drawer
+3. **expo-location** - För att hämta användarens position
+4. **expo-maps** - För kartvisning och markörer
+5. **expo-linking** - För telefonfunktion och externa länkar
+6. **expo-image-picker** - För att välja/ta bilder när man lägger till butiker
+7. **expo-status-bar** - För statusbar-konfiguration
+8. **@expo/vector-icons** - För ikoner i navigation och UI
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+### Extern Modul
+- **react-hook-form** - För formulärhantering vid tillägg av butiker
+- **zustand** - För state management av butiker och applikationstillstånd
+
+
+## Projektstruktur
+
+```
+/app                 # Skärmar (Expo Router)
+  ├── _layout.tsx    # Root layout med Drawer navigation
+  ├── index.tsx      # Startsida
+  ├── localshops.tsx # Lista över butiker  
+  ├── mymap.tsx      # Kartvy
+  └── add-shop.tsx   # Lägg till butik-formulär
+
+/components          # Återanvändbara komponenter
+  ├── local-shop-card.tsx    # Butikskort med information
+  ├── local-shops-map.tsx    # Kartkomponent
+  ├── map-picker.tsx         # Kartväljare för position
+  └── shop-modal.tsx         # Modal för butiksinformation
+
+/context            # React Context för state
+  ├── location-context.tsx   # GPS-position
+  └── map-context.tsx        # Kartfokus
+
+/stores             # Zustand stores
+  └── shops-store.ts         # Butiksdata och operationer
+
+/data               # Seeddata
+  └── localshops.ts          # Testdata för butiker
+
+/utils              # Hjälpfunktioner
+  └── distance.ts            # Avståndberäkningar
+```
+
+## Git & GitHub
+
+Projektet använder Git för versionshantering och är publicerat på GitHub:
+- Repository: [https://github.com/TobiasLinner/Plocky](https://github.com/TobiasLinner/Plocky)
+- Regelbundna commits under utvecklingen
+- Användning av branches för olika funktioner
+- README-dokumentation uppdaterad löpande
+
+## Uppfyllda Krav
+
+### Godkänt ✅
+1. ✅ Projektet använder 8+ React Native komponenter och 8+ Expo komponenter - om så basic
+2. ✅ Komponenter dokumenterade i README med användningsområden
+3. ✅ React Navigation (Drawer) för navigering mellan skärmar
+4. ✅ Git & GitHub använt genomgående
+5. ✅ README.md fil med all nödvändig information
+6. ✅ Inlämning i tid
+7. ✅ Muntlig presentation förberedd
+
+---
