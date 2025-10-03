@@ -1,4 +1,5 @@
 import MapPicker from "@/components/map-picker";
+import { shop_categories } from "@/data/localshops";
 import { useShopsStore } from "@/stores/shops-store";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
@@ -36,6 +37,7 @@ export default function AddShopScreen() {
     latitude: number;
     longitude: number;
   } | null>(null);
+  const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
 
   type FormValues = {
     name: string;
@@ -191,13 +193,34 @@ export default function AddShopScreen() {
               name="category"
               rules={{ required: true }}
               render={({ field }) => (
-                <TextInput
-                  placeholder="Kategori"
-                  value={field.value}
-                  onChangeText={field.onChange as any}
-                  placeholderTextColor={placeholderColor}
-                  style={[styles.input, { color: inputTextColor }]}
-                />
+                <View>
+                  <Pressable
+                    onPress={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
+                    style={[styles.input, { justifyContent: "center" }]}
+                  >
+                    <Text style={{ color: field.value ? inputTextColor : placeholderColor }}>
+                      {field.value || "Välj kategori"}
+                    </Text>
+                  </Pressable>
+                  {categoryDropdownOpen && (
+                    <View style={styles.dropdown}>
+                      <ScrollView style={{ maxHeight: 400 }}>
+                        {shop_categories.map((category) => (
+                          <Pressable
+                            key={category}
+                            onPress={() => {
+                              field.onChange(category);
+                              setCategoryDropdownOpen(false);
+                            }}
+                            style={styles.dropdownItem}
+                          >
+                            <Text>{category}</Text>
+                          </Pressable>
+                        ))}
+                      </ScrollView>
+                    </View>
+                  )}
+                </View>
               )}
             />
             {errors.category && (
@@ -455,6 +478,19 @@ const styles = StyleSheet.create({
     padding: 10,
     height: 40,
     backgroundColor: "#fff",
+  },
+  dropdown: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    backgroundColor: "#a7a7a7ff",
+    marginTop: 4,
+    maxHeight: 800,
+  },
+  dropdownItem: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
   },
   row: { flexDirection: "row", gap: 12 },
   half: { flex: 1 },

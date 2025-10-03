@@ -1,5 +1,15 @@
 import { ImageSourcePropType } from 'react-native';
 
+export const shop_categories = [
+  "Kött (lokalt)",
+  "Mjölk & Mejeri - självhållning",
+  "Jordgubbar - självplock",
+  "Potatis - självplock",
+  "Majs - självplock",
+  "Grönsaker - Gårdsbutik",
+  "Honung & Biprodukter - Butik",
+];
+
 export type LocalShop = {
   id: string;
   name: string;
