@@ -4,7 +4,7 @@
     "slug": "Plucky",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/plucky-app-icon.png",
     "scheme": "plucky",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -40,8 +40,8 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "image": "./assets/plucky-app-icon.png",
+          "imageWidth": 512,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
           "dark": {
