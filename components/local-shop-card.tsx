@@ -1,9 +1,10 @@
+import { openweatherapikey } from "@/constants/weatherkey";
 import { useLocation } from "@/context/location-context";
 import type { LocalShop } from "@/data/localshops";
 import { calculateDistance, formatDistance } from "@/utils/distance";
 import { FontAwesome } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Linking,
@@ -21,6 +22,12 @@ type Props = {
   onShowOnMap: () => void;
 };
 
+type WeatherData = {
+  temp: number;
+  description: string;
+  icon: string;
+};
+
 export default function LocalShopCard({
   shop,
   onPress,
@@ -28,6 +35,13 @@ export default function LocalShopCard({
   onShowOnMap,
 }: Props) {
   const { userLocation } = useLocation();
+  const [weather, setWeather] = useState<WeatherData | null>(null);
+
+  const getWeatherIconUrl = (iconCode: string): string => {
+    return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+  };
+
+
 
   const openMaps = () => {
     Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${shop.lat},${shop.lng}`);
@@ -41,6 +55,24 @@ export default function LocalShopCard({
       shop.lng
     )
     : null;
+
+  useEffect(() => {
+    async function fetchWeather() {
+      if (!shop.lat || !shop.lng || !openweatherapikey) return;
+      const res = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${shop.lat}&lon=${shop.lng}&units=metric&lang=sv&appid=${openweatherapikey}`
+      );
+      const data = await res.json();
+      if (data && data.main && data.weather && data.weather[0]) {
+        setWeather({
+          temp: data.main.temp,
+          description: data.weather[0].description,
+          icon: data.weather[0].icon,
+        });
+      }
+    }
+    fetchWeather();
+  }, [shop.lat, shop.lng]);
 
   return (
     <View style={styles.card}>
@@ -60,6 +92,18 @@ export default function LocalShopCard({
             <Text style={styles.distance}>{formatDistance(distance)}</Text>
           )}
           <Text style={styles.hours}>{shop.hours}</Text>
+          {weather && (
+            <View style={styles.weatherContainer}>
+              <Image
+                source={{ uri: getWeatherIconUrl(weather.icon) }}
+                style={styles.weatherIcon}
+                contentFit="contain"
+              />
+              <Text style={styles.weather}>
+                {weather.temp.toFixed(1)}°C
+              </Text>
+            </View>
+          )}
         </TouchableOpacity>
 
         {shop.phone ? (
@@ -183,5 +227,19 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#666",
     marginTop: 4,
+  },
+  weather: {
+    fontSize: 12,
+    color: "#0077cc",
+    marginTop: 2,
+    fontWeight: "500",
+  },
+  weatherContainer: {
+    flexDirection: "row",
+  },
+  weatherIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 4,
   },
 });
